@@ -1,17 +1,14 @@
 int xPin = A4;
 int yPin = A5;
-int switchPin = 2; // Pin del botón del joystick
 int xVal; // Variable para almacenar los valores del eje x del joystick
 int yVal; // Variable para almacenar los valores del eje y del joystick
-int switchState; // Variable para almacenar el estado del interruptor del joystick
 
 // Rango para considerar el joystick como "en reposo"
-const int deadZone = 100;
+const int deadZone = 300;
 
 void setup() {
   pinMode(xPin, INPUT);
   pinMode(yPin, INPUT);
-  pinMode(switchPin, INPUT_PULLUP); // Establece el pin del interruptor como entrada con resistencia pull-up
   Serial.begin(9600); // Inicializa el monitor serial
 }
 
@@ -19,7 +16,6 @@ void loop() {
   // Lee los valores de x, y y el estado del interruptor del joystick
   xVal = analogRead(xPin);
   yVal = analogRead(yPin);
-  switchState = digitalRead(switchPin);
 
   // Detecta el movimiento del joystick en las direcciones principales
   if (xVal > 600) {

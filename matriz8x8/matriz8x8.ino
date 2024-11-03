@@ -148,9 +148,9 @@ void setup() {
     pinMode(filas[i], OUTPUT);
 
     // Inicialmente, apagamos todos los LEDs
-    // Para eso, ponemos todas las columnas en HIGH y las filas en LOW
-    digitalWrite(columnas[i], HIGH);  // Apagar columnas
-    digitalWrite(filas[i], LOW);      // Apagar filas
+    // Para eso, ponemos todas las columnas en LOW y las filas en HIGH
+    digitalWrite(columnas[i], LOW);  // Apagar columnas
+    digitalWrite(filas[i], HIGH);      // Apagar filas
   }
 }
 

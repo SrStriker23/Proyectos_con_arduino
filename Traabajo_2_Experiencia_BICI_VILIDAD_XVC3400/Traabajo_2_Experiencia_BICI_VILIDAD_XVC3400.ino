@@ -172,8 +172,8 @@ void setup() {
     pinMode(filas[i], OUTPUT);
 
     // Inicialmente, apagar todos los LEDs
-    digitalWrite(columnas[i], HIGH);  // Desactiva columnas
-    digitalWrite(filas[i], LOW);      // Desactiva filas
+    digitalWrite(columnas[i], LOW);  // Desactiva columnas
+    digitalWrite(filas[i], HIGH);      // Desactiva filas
   }
 
   // Configurar pines del joystick como entradas
