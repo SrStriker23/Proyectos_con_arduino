@@ -5,7 +5,7 @@ int xVal;             // Variable para almacenar el valor del eje X del joystick
 int yVal;             // Variable para almacenar el valor del eje Y del joystick
 
 // Rango para considerar el joystick "en reposo"
-const int deadZone = 100;
+const int deadZone = 300;
 
 // Pines para las columnas y filas de la matriz LED
 int columnas[] = { 2, 3, 4, 5, 6, 7, 8, 9 };       // Pines de las columnas de la matriz
