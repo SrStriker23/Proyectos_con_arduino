@@ -16,8 +16,8 @@ Servo servoMotor;
 
 // Lista de UIDs permitidos
 const byte UIDsPermitidos[][4] = {
-  { 0x13, 0x92, 0x47, 0x14 },  // Llavero Vicente
-  { 0x63, 0xA6, 0x2B, 0x27 },  // Tarjeta Vicente
+  { 0x13, 0x92, 0x47, 0x13 },  // Llavero Vicente
+  { 0x63, 0xA6, 0x2B, 0x28 },  // Tarjeta Vicente
   { 0xF3, 0x1F, 0x12, 0xAD },  // Tarjeta Franco
   { 0x64, 0x17, 0xCE, 0xCF },  // Llavero Franco
   { 0x17, 0x07, 0x55, 0x86 },  // Tarjeta Celeste
@@ -27,17 +27,18 @@ const byte UIDsPermitidos[][4] = {
 };
 
 const char* nombres[] = {
-  "Vicente",
+  "Striker23",
   "Vicente",
   "Franco",
   "Franco",
   "Celeste",
   "Celeste",
   "Misael",
-  "Misael"
+  "Misael",
 };
 
 const char* nivel[] = {
+  "JEFE FINAL",
   "302",
   "302",
   "302",
@@ -45,12 +46,11 @@ const char* nivel[] = {
   "302",
   "302",
   "302",
-  "302"
 };
 
 byte LecturaUID[4];
-int servoPosicionCerrado = 0;   // Posición del servo para "cerrado"
-int servoPosicionAbierto = 90;  // Posición del servo para "abierto"
+int servoPosicionCerrado = 90;   // Posición del servo para "cerrado"
+int servoPosicionAbierto = 180;  // Posición del servo para "abierto"
 
 void setup() {
   Serial.begin(9600);
