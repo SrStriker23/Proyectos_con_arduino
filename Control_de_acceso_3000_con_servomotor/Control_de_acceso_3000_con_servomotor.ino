@@ -1,34 +1,36 @@
-#include <SPI.h>
-#include <MFRC522.h>
-#include <LiquidCrystal_I2C.h>
-#include <Servo.h>  // Incluir la biblioteca para el servomotor
+#include <SPI.h>               // Biblioteca para comunicación SPI, usada por el lector RFID
+#include <MFRC522.h>           // Biblioteca para manejar el lector RFID
+#include <LiquidCrystal_I2C.h> // Biblioteca para manejar el LCD con interfaz I2C
+#include <Servo.h>             // Biblioteca para manejar el servomotor
 
-#define RST_PIN  9
-#define SS_PIN  10
-#define BUZZER_PIN 5       // Pin del buzzer
-#define RED_LED_PIN 4      // Pin de la luz roja
-#define GREEN_LED_PIN 3    // Pin de la luz verde
-#define SERVO_PIN 6        // Pin del servomotor
+// Definición de pines
+#define RST_PIN  9           // Pin de reinicio del lector RFID
+#define SS_PIN  10           // Pin de selección del lector RFID
+#define BUZZER_PIN 5         // Pin del buzzer
+#define RED_LED_PIN 4        // Pin de la luz roja
+#define GREEN_LED_PIN 3      // Pin de la luz verde
+#define SERVO_PIN 6          // Pin del servomotor
 
-MFRC522 mfrc522(SS_PIN, RST_PIN);
-LiquidCrystal_I2C lcd(0x27, 16, 2);
-Servo servoMotor;
+MFRC522 mfrc522(SS_PIN, RST_PIN); // Crear instancia del lector RFID
+LiquidCrystal_I2C lcd(0x27, 16, 2); // Crear instancia del LCD (dirección 0x27, 16 columnas x 2 filas)
+Servo servoMotor;                  // Crear instancia del servomotor
 
-// Lista de UIDs permitidos
+// Lista de UIDs permitidos (cada UID es un arreglo de 4 bytes)
 const byte UIDsPermitidos[][4] = {
-  { 0x13, 0x92, 0x47, 0x14 },  // Llavero Vicente
-  { 0x63, 0xA6, 0x2B, 0x28 },  // Tarjeta Vicente
-  { 0xF3, 0x1F, 0x12, 0xAD },  // Tarjeta Franco
-  { 0x64, 0x17, 0xCE, 0xCF },  // Llavero Franco
-  { 0x17, 0x07, 0x55, 0x86 },  // Tarjeta Celeste
-  { 0x8A, 0x18, 0xDE, 0x00 },  // Llavero Celeste
-  { 0x26, 0xb4, 0x7E, 0x00 },  // Tarjeta Misael
-  { 0x07, 0x6F, 0x1F, 0x86 },  // Llavero Misael
-  { 0x7A, 0xEE, 0x17, 0x02 },  // Tarjeta Brandon
-  { 0x53, 0xBC, 0xB8, 0x2C },  // Llavero Brandon
+  { 0x13, 0x92, 0x47, 0x14 },  // Ejemplo: Llavero Vicente
+  { 0x63, 0xA6, 0x2B, 0x28 },  // Ejemplo: Tarjeta Vicente
+  { 0xF3, 0x1F, 0x12, 0xAD },  // Ejemplo: Tarjeta Franco
+  { 0x64, 0x17, 0xCE, 0xCF },  // Ejemplo: Llavero Franco
+  { 0x17, 0x07, 0x55, 0x86 },  // Ejemplo: Tarjeta Celeste
+  { 0x8A, 0x18, 0xDE, 0x00 },  // Ejemplo: Llavero Celeste
+  { 0x26, 0xB4, 0x7E, 0x00 },  // Ejemplo: Tarjeta Misael
+  { 0x07, 0x6F, 0x1F, 0x86 },  // Ejemplo: Llavero Misael
+  { 0x7A, 0xEE, 0x17, 0x02 },  // Ejemplo: Tarjeta Brandon
+  { 0x53, 0xBC, 0xB8, 0x2C },  // Ejemplo: Llavero Brandon
 };
 
-const char* nombres[ ] = {
+// Nombres asociados a cada UID en el mismo orden
+const char* nombres[] = {
   "Vicente",
   "Vicente",
   "Franco",
@@ -41,6 +43,7 @@ const char* nombres[ ] = {
   "Brandon",
 };
 
+// Nivel asociado a cada UID en el mismo orden
 const char* nivel[] = {
   "306",
   "302",
@@ -54,70 +57,68 @@ const char* nivel[] = {
   "302",
 };
 
-byte LecturaUID[4];
-int servoPosicionCerrado = 90;   // Posición del servo para "cerrado"
-int servoPosicionAbierto = 180;  // Posición del servo para "abierto"
+byte LecturaUID[4];                 // Almacena temporalmente el UID leído
+int servoPosicionCerrado = 90;      // Posición del servomotor cuando está cerrado
+int servoPosicionAbierto = 180;     // Posición del servomotor cuando está abierto
 
 void setup() {
-  Serial.begin(9600);
-  SPI.begin();
-  mfrc522.PCD_Init();
-  lcd.init();
-  lcd.backlight();
-  
-  pinMode(BUZZER_PIN, OUTPUT);       // Configurar el pin del buzzer como salida
-  pinMode(RED_LED_PIN, OUTPUT);      // Configurar el pin de la luz roja como salida
-  pinMode(GREEN_LED_PIN, OUTPUT);    // Configurar el pin de la luz verde como salida
+  Serial.begin(9600);              // Inicializar comunicación serie
+  SPI.begin();                     // Inicializar comunicación SPI
+  mfrc522.PCD_Init();              // Inicializar el lector RFID
+  lcd.init();                      // Inicializar el LCD
+  lcd.backlight();                 // Activar la luz de fondo del LCD
 
-  // Conectar el servomotor y establecer posición inicial en "cerrado"
+  // Configurar pines como salida
+  pinMode(BUZZER_PIN, OUTPUT);
+  pinMode(RED_LED_PIN, OUTPUT);
+  pinMode(GREEN_LED_PIN, OUTPUT);
+
+  // Configurar el servomotor y establecer posición inicial
   servoMotor.attach(SERVO_PIN);
   servoMotor.write(servoPosicionCerrado);
 
-  // Mensaje de inicio en el LCD
+  // Mostrar mensaje de inicio en el LCD
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Inicializando...");
-  delay(2000);  // Mostrar el mensaje de inicio durante 2 segundos
-  
+  delay(2000);
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Escaner listo");
   Serial.println("Escáner listo");
-  delay(2000);  // Mantener mensaje en pantalla por 2 segundos
 }
 
 void loop() {
-  digitalWrite(RED_LED_PIN, LOW);    // Apagar luces al iniciar el ciclo
+  digitalWrite(RED_LED_PIN, LOW);  // Apagar luces al inicio del ciclo
   digitalWrite(GREEN_LED_PIN, LOW);
 
   // Verificar si hay una tarjeta presente
   if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial()) {
-    return;
+    return; // Si no hay tarjeta, salir del ciclo
   }
 
-  // Leer el UID de la tarjeta y mostrarlo en el monitor serie
+  // Leer el UID de la tarjeta
   Serial.print("UID leido: ");
   for (byte i = 0; i < mfrc522.uid.size; i++) {
-    LecturaUID[i] = mfrc522.uid.uidByte[i];
-    Serial.print(mfrc522.uid.uidByte[i], HEX); // Mostrar UID en hexadecimal
+    LecturaUID[i] = mfrc522.uid.uidByte[i]; // Guardar el UID leído
+    Serial.print(mfrc522.uid.uidByte[i], HEX); // Mostrar en hexadecimal
     Serial.print(" ");
   }
   Serial.println();
 
-  // Verificar si el UID coincide con uno permitido
+  // Verificar si el UID es permitido
   int indice = buscaUID(LecturaUID);
-  if (indice >= 0) {
-    // Si el UID es válido, emitir tono de éxito, encender luz verde y abrir acceso
+  if (indice >= 0) { // UID encontrado en la lista
     Serial.print("Acceso permitido para: ");
     Serial.println(nombres[indice]);
 
-    tone(BUZZER_PIN, 970, 150); 
+    tone(BUZZER_PIN, 970, 150); // Sonido de éxito
     delay(100);
     tone(BUZZER_PIN, 1050, 120);
-    
-    digitalWrite(GREEN_LED_PIN, HIGH);  // Encender luz verde
 
-    // Mostrar mensaje en el LCD
+    digitalWrite(GREEN_LED_PIN, HIGH); // Encender luz verde
+
+    // Mostrar datos en el LCD
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("Nombre:");
@@ -126,44 +127,37 @@ void loop() {
     lcd.print("Nivel:");
     lcd.print(nivel[indice]);
 
-    // Mover el servo a la posición de "abierto"
-    servoMotor.write(servoPosicionAbierto);  
-    delay(5000);  // Mantener acceso abierto por 5 segundos
-    
-    // Volver el servo a la posición de "cerrado"
-    servoMotor.write(servoPosicionCerrado);
-    lcd.clear();  // Limpiar pantalla después de 5 segundos
-  } else {
-    // Emitir tono de error, encender luz roja y mantener acceso cerrado
+    servoMotor.write(servoPosicionAbierto); // Abrir acceso
+    delay(5000); // Mantener abierto 5 segundos
+    servoMotor.write(servoPosicionCerrado); // Cerrar acceso
+
+  } else { // UID no encontrado
     Serial.println("Acceso denegado: No te conozco");
 
-    tone(BUZZER_PIN, 500, 500);  // Sonido de incorrecto en el buzzer
-    digitalWrite(RED_LED_PIN, HIGH);  // Encender luz roja
+    tone(BUZZER_PIN, 500, 500); // Sonido de error
+    digitalWrite(RED_LED_PIN, HIGH); // Encender luz roja
 
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("ACCESO DENEGADO");
-
-    delay(5000);  // Mantener mensaje de acceso denegado durante 5 segundos
-    lcd.clear();  // Limpiar pantalla después de 5 segundos
+    delay(5000); // Mostrar mensaje por 5 segundos
   }
 
-  // Espera a que la tarjeta sea retirada antes de continuar
+  // Esperar a que se retire la tarjeta
   while (mfrc522.PICC_IsNewCardPresent() || mfrc522.PICC_ReadCardSerial()) {
     delay(50);
   }
 
-  mfrc522.PICC_HaltA();
-  
-  // Mensaje de "Escáner preparado" después de cada lectura
+  mfrc522.PICC_HaltA(); // Detener comunicación con la tarjeta
+
+  // Preparar para la siguiente lectura
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Escaner listo");
-  Serial.println("Escaner listo");
-  delay(1000);  // Mantener el mensaje por 1 segundo antes de reiniciar el ciclo
+  delay(1000);
 }
 
-// Función para buscar el UID en la lista de permitidos
+// Buscar el UID en la lista de permitidos
 int buscaUID(byte lectura[]) {
   for (int i = 0; i < sizeof(UIDsPermitidos) / sizeof(UIDsPermitidos[0]); i++) {
     bool coincide = true;
@@ -173,8 +167,7 @@ int buscaUID(byte lectura[]) {
         break;
       }
     }
-    if (coincide) return i;
+    if (coincide) return i; // Retorna el índice si encuentra coincidencia
   }
-  return -1;
+  return -1; // Retorna -1 si no encuentra el UID
 }
-
