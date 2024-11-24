@@ -16,7 +16,7 @@ Servo servoMotor;
 
 // Lista de UIDs permitidos
 const byte UIDsPermitidos[][4] = {
-  { 0x13, 0x92, 0x47, 0x13 },  // Llavero Vicente
+  { 0x13, 0x92, 0x47, 0x14 },  // Llavero Vicente
   { 0x63, 0xA6, 0x2B, 0x28 },  // Tarjeta Vicente
   { 0xF3, 0x1F, 0x12, 0xAD },  // Tarjeta Franco
   { 0x64, 0x17, 0xCE, 0xCF },  // Llavero Franco
@@ -24,10 +24,12 @@ const byte UIDsPermitidos[][4] = {
   { 0x8A, 0x18, 0xDE, 0x00 },  // Llavero Celeste
   { 0x26, 0xb4, 0x7E, 0x00 },  // Tarjeta Misael
   { 0x07, 0x6F, 0x1F, 0x86 },  // Llavero Misael
+  { 0x7A, 0xEE, 0x17, 0x02 },  // Tarjeta Brandon
+  { 0x53, 0xBC, 0xB8, 0x2C },  // Llavero Brandon
 };
 
-const char* nombres[] = {
-  "Striker23",
+const char* nombres[ ] = {
+  "Vicente",
   "Vicente",
   "Franco",
   "Franco",
@@ -35,10 +37,14 @@ const char* nombres[] = {
   "Celeste",
   "Misael",
   "Misael",
+  "Brandon",
+  "Brandon",
 };
 
 const char* nivel[] = {
-  "JEFE FINAL",
+  "306",
+  "302",
+  "302",
   "302",
   "302",
   "302",
