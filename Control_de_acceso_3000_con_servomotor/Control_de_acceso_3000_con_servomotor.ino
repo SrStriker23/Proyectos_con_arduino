@@ -17,21 +17,23 @@ Servo servoMotor;                  // Crear instancia del servomotor
 
 // Lista de UIDs permitidos (cada UID es un arreglo de 4 bytes)
 const byte UIDsPermitidos[][4] = {
-  { 0x13, 0x92, 0x47, 0x14 },  // Ejemplo: Llavero Vicente
-  { 0x63, 0xA6, 0x2B, 0x28 },  // Ejemplo: Tarjeta Vicente
-  { 0xF3, 0x1F, 0x12, 0xAD },  // Ejemplo: Tarjeta Franco
-  { 0x64, 0x17, 0xCE, 0xCF },  // Ejemplo: Llavero Franco
-  { 0x17, 0x07, 0x55, 0x86 },  // Ejemplo: Tarjeta Celeste
-  { 0x8A, 0x18, 0xDE, 0x00 },  // Ejemplo: Llavero Celeste
-  { 0x26, 0xB4, 0x7E, 0x00 },  // Ejemplo: Tarjeta Misael
-  { 0x07, 0x6F, 0x1F, 0x86 },  // Ejemplo: Llavero Misael
-  { 0x7A, 0xEE, 0x17, 0x02 },  // Ejemplo: Tarjeta Brandon
-  { 0x53, 0xBC, 0xB8, 0x2C },  // Ejemplo: Llavero Brandon
+  { 0x13, 0x92, 0x47, 0x14 },  //  Llavero Vicente
+  { 0x63, 0xA6, 0x2B, 0x28 },  //  Tarjeta Vicente
+  { 0xF3, 0x1F, 0x12, 0xAD },  //  Tarjeta Franco
+  { 0x64, 0x17, 0xCE, 0xCF },  //  Llavero Franco
+  { 0x17, 0x07, 0x55, 0x86 },  //  Tarjeta Celeste
+  { 0x8A, 0x18, 0xDE, 0x00 },  //  Llavero Celeste
+  { 0x26, 0xB4, 0x7E, 0x00 },  //  Tarjeta Misael
+  { 0x07, 0x6F, 0x1F, 0x86 },  //  Llavero Misael
+  { 0x7A, 0xEE, 0x17, 0x02 },  //  Tarjeta Brandon
+  { 0x53, 0xBC, 0xB8, 0x2C },  //  Llavero Brandon //E3 DF 8C 4
+  { 0xE3, 0xDF, 0x8C, 0x4 },  //  Tarjeta Profesor Nahur //E3 DF 8C 4
+  { 0xB0, 0x12, 0xCD, 0xCF },  //  Llavero Jorge Palma //B0 12 CD CF
 };
 
 // Nombres asociados a cada UID en el mismo orden
 const char* nombres[] = {
-  "Vicente",
+  "Vicente J",
   "Vicente",
   "Franco",
   "Franco",
@@ -41,11 +43,13 @@ const char* nombres[] = {
   "Misael",
   "Brandon",
   "Brandon",
+  "Nahur M",
+  "Jorge P",
 };
 
 // Nivel asociado a cada UID en el mismo orden
 const char* nivel[] = {
-  "306",
+  "Magister",
   "302",
   "302",
   "302",
@@ -55,6 +59,8 @@ const char* nivel[] = {
   "302",
   "302",
   "302",
+  "Profesor",
+  "Sistemas",
 };
 
 byte LecturaUID[4];                 // Almacena temporalmente el UID leído
